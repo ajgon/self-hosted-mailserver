@@ -1,0 +1,48 @@
+- name: Install postfix
+  apt: pkg=postfix state=latest
+- name: Install postfix-mysql
+  apt: pkg=postfix-mysql state=latest
+- name: Install python-mysqldb
+  apt: pkg=python-mysqldb state=latest
+- name: "/etc/postfix/main.cf: smtpd_tls_cert_file=/etc/ssl/certs/this-machine.pem"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtpd_tls_cert_file\s*=" line="smtpd_tls_cert_file=/etc/ssl/certs/this-machine.pem"
+- name: "/etc/postfix/main.cf: smtpd_tls_key_file=/etc/ssl/private/this-machine.pem"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtpd_tls_key_file\s*=" line="smtpd_tls_key_file=/etc/ssl/private/this-machine.pem"
+- name: "/etc/postfix/main.cf: smtpd_use_tls=yes"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtpd_use_tls\s*=" line="smtpd_use_tls=yes"
+- name: "/etc/postfix/main.cf: smtpd_tls_auth_only = yes"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtpd_tls_auth_only\s*=" line="smtpd_tls_auth_only = yes"
+- name: "/etc/postfix/main.cf: smtp_tls_security_level = may"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtp_tls_security_level\s*=" line="smtp_tls_security_level = may"
+- name: "/etc/postfix/main.cf: smtp_tls_loglevel = 2"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtp_tls_loglevel\s*=" line="smtp_tls_loglevel = 2"
+- name: "/etc/postfix/main.cf: smtpd_tls_received_header = yes"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtpd_tls_received_header\s*=" line="smtpd_tls_received_header = yes"
+- name: "/etc/postfix/main.cf: smtpd_sasl_type = dovecot"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtpd_sasl_type\s*=" line="smtpd_sasl_type = dovecot"
+- name: "/etc/postfix/main.cf: smtpd_sasl_path = private/auth"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtpd_sasl_path\s*=" line="smtpd_sasl_path = private/auth"
+- name: "/etc/postfix/main.cf: smtpd_sasl_auth_enable = yes"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtpd_sasl_auth_enable\s*=" line="smtpd_sasl_auth_enable = yes"
+- name: "/etc/postfix/main.cf: smtpd_recipient_restrictions = permit_sasl_authenticated, permit_mynetworks, reject_unauth_destination"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtpd_recipient_restrictions\s*=" line="smtpd_recipient_restrictions = permit_sasl_authenticated, permit_mynetworks, reject_unauth_destination"
+- name: "/etc/postfix/main.cf: mydestination = localhost"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*mydestination\s*=" line="mydestination = localhost"
+- name: "/etc/postfix/main.cf: virtual_transport = lmtp:unix:private/dovecot-lmtp"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*virtual_transport\s*=" line="virtual_transport = lmtp:unix:private/dovecot-lmtp"
+- name: "/etc/postfix/main.cf: virtual_mailbox_domains = mysql:/etc/postfix/mysql-virtual-mailbox-domains.cf"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*virtual_mailbox_domains\s*" line="virtual_mailbox_domains = mysql:/etc/postfix/mysql-virtual-mailbox-domains.cf"
+- name: "/etc/postfix/main.cf: virtual_mailbox_maps = mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*virtual_mailbox_maps\s*=" line="virtual_mailbox_maps = mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf"
+- name: "/etc/postfix/main.cf: virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-alias-maps.cf"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*virtual_alias_maps\s*=" line="virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-alias-maps.cf"
+- name: "/etc/postfix/main.cf: local_recipient_maps = $virtual_mailbox_maps"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*local_recipient_maps\s=" line="local_recipient_maps = $virtual_mailbox_maps"
+- name: "/etc/postfix/mysql-virtual-mailbox-domains.cf"
+  template: src=roles/postfix/templates/mysql-virtual-mailbox-domains.cf.j2 dest=/etc/postfix/mysql-virtual-mailbox-domains.cf
+- name: "/etc/postfix/mysql-virtual-mailbox-maps.cf"
+  template: src=roles/postfix/templates/mysql-virtual-mailbox-maps.cf.j2 dest=/etc/postfix/mysql-virtual-mailbox-maps.cf
+- name: "/etc/postfix/mysql-virtual-alias-maps.cf"
+  template: src=roles/postfix/templates/mysql-virtual-alias-maps.cf.j2 dest=/etc/postfix/mysql-virtual-alias-maps.cf
+- name: Restart postfix
+  service: state=restarted name=postfix

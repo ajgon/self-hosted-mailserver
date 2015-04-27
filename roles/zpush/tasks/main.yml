@@ -1,0 +1,23 @@
+- name: Install Z-Push
+  apt: pkg=d-push state=latest
+- name: Enable PHP IMAP
+  file: src=/etc/php5/mods-available/imap.ini dest=/etc/php5/fpm/conf.d/20-imap.ini state=link
+- name: '/etc/d-push/config.php: IMAP_PORT = 993'
+  lineinfile: dest=/etc/d-push/config.php regexp="define\(\s*'IMAP_PORT'" line="define('IMAP_PORT', 993);"
+- name: '/etc/d-push/config.php: IMAP_OPTIONS = /ssl/novalidate-cert'
+  lineinfile: dest=/etc/d-push/config.php regexp="define\(\s*'IMAP_OPTIONS'" line="define('IMAP_OPTIONS', '/ssl/novalidate-cert');"
+- name: '/etc/d-push/config.php: STATE_DIR = /mail/dpush-state'
+  lineinfile: dest=/etc/d-push/config.php regexp="define\(\s*'STATE_DIR'" line="define('STATE_DIR', '/mail/dpush-state/');"
+- name: '/etc/d-push/config.php: IMAP_SENTFOLDER = Sent Messages'
+  lineinfile: dest=/etc/d-push/config.php regexp="define\(\s*'IMAP_SENTFOLDER'" line="define('IMAP_SENTFOLDER', 'Sent Messages');"
+- name: '/usr/share/d-push/backend/imap.php: patch deleted messages'
+  lineinfile: dest=/usr/share/d-push/backend/imap.php regexp="else if\(\$lid == \"trash\"\)" line="else if($lid == \"trash\" || $lid=\"deleted messages\") {"
+- name: '/mail/dpush-state: create'
+  file: path=/mail/dpush-state state=directory owner=www-data group=www-data mode=0770
+- name: '/etc/nginx/sites-available/z-push'
+  template: src=roles/zpush/templates/z-push.j2 dest=/etc/nginx/sites-available/z-push
+- name: '/etc/nginx/sites-enabled/z-push'
+  file: src=/etc/nginx/sites-available/z-push dest=/etc/nginx/sites-enabled/z-push state=link
+- name: Restart nginx
+  service: state=restarted name=nginx
+

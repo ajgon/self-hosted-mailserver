@@ -1,0 +1,15 @@
+- name: Update distro
+  apt: update_cache=yes upgrade=yes
+- name: Disable recommended packages
+  shell: echo 'APT::Install-Recommends "0";' > /etc/apt/apt.conf.d/00norecommends
+- name: Install libc-bin
+  apt: pkg=libc-bin state=latest
+- name: Install MySQL
+  apt: pkg=mysql-server state=latest
+- name: Install python-mysqldb
+  apt: pkg=python-mysqldb state=latest
+- name: Set MySQL root password
+  mysql_user: name=root password={{ mysql_root_password }}
+- name: "/root/.my.cnf"
+  template: src=roles/base/templates/my.cnf.j2 dest=/root/.my.cnf
+

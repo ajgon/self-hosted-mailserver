@@ -1,0 +1,12 @@
+- name: "/tmp/maildb.sql"
+  template: src=roles/maildb/templates/maildb.sql.j2 dest=/tmp/maildb.sql
+- name: Create mailserver database
+  mysql_db: name={{ maildb.database }}
+- name: Import mailserver database
+  mysql_db: name={{ maildb.database }} state=import target=/tmp/maildb.sql
+- name: Create mailserver MySQL user
+  mysql_user: name={{ maildb.username }} password="{{ maildb.password }}" priv="{{ maildb.database }}.*:ALL"
+- name: "/tmp/maildb.sql: remove"
+  file: path=/tmp/maildb.sql state=absent
+- name: "/mail"
+  file: path=/mail state=directory owner=mail group=mail mode=771

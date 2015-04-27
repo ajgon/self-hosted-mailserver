@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+{% for domain in maildb.domains %}
+{% for user in domain.users %}
+IMAPDOMAIN=$(echo "{{ user.email }}" | awk -F@ '{print $2}')
+IMAPUSER=$(echo "{{ user.email }}" | awk -F@ '{print $1}')
+if [ ! -d /mail/$IMAPDOMAIN/$IMAPUSER ]; then
+  mkdir -p /mail/$IMAPDOMAIN/$IMAPUSER
+  chown -R mail:mail /mail/$IMAPDOMAIN
+  chmod -R 700 /mail/$IMAPDOMAIN
+fi
+{% endfor %}
+{% endfor %}

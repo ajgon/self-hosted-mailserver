@@ -1,0 +1,9 @@
+security:
+  # Default non-root user login
+  user_login: ""
+  # Default non-root user password
+  user_password: ""
+  # Default non-root user SSH public key
+  user_publickey: ""
+  # Security email - all security concerns will be delivered there, it's a good idea to use email stored on some external source, devoted only for that purpouse
+  email: ""

@@ -1,0 +1,4 @@
+- name: Install nginx
+  apt: pkg=nginx state=latest
+- name: '/etc/nginx/sites-enabled/default: remove'
+  file: path=/etc/nginx/sites-enabled/default state=absent

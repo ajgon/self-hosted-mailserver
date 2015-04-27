@@ -1,0 +1,33 @@
+- name: Install OpenDKIM
+  apt: pkg=opendkim state=latest
+- name: Install OpenDKIM Tools
+  apt: pkg=opendkim-tools state=latest
+- name: /etc/opendkim
+  file: path=/etc/opendkim state=directory owner=opendkim group=opendkim mode="o-rwx"
+- name: /tmp/opendkim-generate
+  template: src=roles/opendkim/templates/opendkim-generate.j2 dest=/tmp/opendkim-generate
+- name: Generate OpenDKIM keys
+  shell: bash /tmp/opendkim-generate
+- name: "/tmp/opendkim-generate: remove"
+  file: path=/etc/opendkim-generate state=absent
+- name: /etc/opendkim/KeyTable
+  template: src=roles/opendkim/templates/KeyTable.j2 dest=/etc/opendkim/KeyTable
+- name: /etc/opendkim/SigningTable
+  template: src=roles/opendkim/templates/SigningTable.j2 dest=/etc/opendkim/SigningTable
+- name: /etc/opendkim/TrustedHosts
+  template: src=roles/opendkim/templates/TrustedHosts.j2 dest=/etc/opendkim/TrustedHosts
+- name: /etc/opendkim.conf
+  template: src=roles/opendkim/templates/opendkim.conf.j2 dest=/etc/opendkim.conf
+- name: "/etc/postfix/main.cf: smtpd_milters = inet:127.0.0.1:8891"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtpd_milters\s*=" line="smtpd_milters = inet:127.0.0.1:8891"
+- name: "/etc/postfix/main.cf: non_smtpd_milters = $smtpd_milters"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*non_smtpd_milters\s*=" line="non_smtpd_milters = $smtpd_milters"
+- name: "/etc/postfix/main.cf: milter_default_action = accept"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*milter_default_action\s*=" line="milter_default_action = accept"
+- name: "/etc/opendkim: chmod 0600 recursive"
+  file: path=/etc/opendkim mode="u+rw,g-rwx,o-rwx" owner=opendkim group=opendkim recurse=yes
+- name: Restart OpenDKIM
+  service: state=restarted name=opendkim
+- name: Restart Postfix
+  service: state=restarted name=postfix
+

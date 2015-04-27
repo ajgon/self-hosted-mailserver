@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+{% for domain in maildb.domains %}
+{% for user in domain.users %}
+IMAPDOMAIN=$(echo "{{ user.email  }}" | awk -F@ '{print $2}')
+IMAPUSER=$(echo "{{ user.email  }}" | awk -F@ '{print $1}')
+cat << EOF > /mail/$IMAPDOMAIN/$IMAPUSER/.dovecot.sieve
+require ["regex", "fileinto", "imap4flags"];
+# Catch mail tagged as Spam, except Spam retrained and delivered to the mailbox
+if allof (header :regex "X-DSPAM-Result" "^(Spam|Virus|Bl[ao]cklisted)$",
+        not header :contains "X-DSPAM-Reclassified" "Innocent") {
+  # Mark as read
+  setflag "\\Seen";
+  # Move into the Junk folder
+  fileinto "Spam";
+  # Stop processing here
+  stop;
+}
+EOF
+chown mail:mail /mail/$IMAPDOMAIN/$IMAPUSER/.dovecot.sieve
+chmod 660 /mail/$IMAPDOMAIN/$IMAPUSER/.dovecot.sieve
+{% endfor %}
+{% endfor %}

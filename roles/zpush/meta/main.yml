@@ -1,0 +1,6 @@
+dependencies:
+  - base
+  - ssl
+  - dovecot
+  - nginx
+  - php

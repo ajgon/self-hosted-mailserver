@@ -1,0 +1,11 @@
+{% for domain in maildb.domains %}
+DELETE FROM `{{ maildb.database }}`.`virtual_domains` WHERE `name` = '{{ domain.name }}';
+INSERT INTO `{{ maildb.database }}`.`virtual_domains` (`name`) VALUES ('{{ domain.name  }}');
+SET @domain_id = LAST_INSERT_ID();
+
+{% for user in domain.users %}
+DELETE FROM `{{ maildb.database }}`.`virtual_users` WHERE `email` = '{{ user.email }}';
+INSERT INTO `{{ maildb.database }}`.`virtual_users` (`domain_id`, `password` , `email`) VALUES (@domain_id, '#{{ user.email }}#PASSWORD#', '{{ user.email }}');
+{% endfor %}
+
+{% endfor %}

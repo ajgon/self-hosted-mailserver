@@ -1,0 +1,26 @@
+- name: Install fail2ban
+  apt: pkg=fail2ban state=latest
+- name: Install unattended-upgrades
+  apt: pkg=unattended-upgrades state=latest
+- name: Install logwatch
+  apt: pkg=logwatch state=latest
+- name: Add default user
+  user: name="{{ security.user_login }}"
+- name: Set user password
+  shell: "echo \"{{ security.user_login }}:{{ security.user_password }}\" | chpasswd"
+- name: Create user .ssh directory
+  file: path="~{{ security.user_login }}/.ssh" mode=0700 state=directory owner="{{ security.user_login }}"
+- name: Create user authorized_keys
+  template: src=roles/security/templates/authorized_keys.j2 dest="~{{ security.user_login }}/.ssh/authorized_keys" owner="{{ security.user_login }}" mode=0400
+- name: "/etc/sudoers"
+  template: src=roles/security/templates/sudoers.j2 dest=/etc/sudoers
+- name: "/etc/ssh/sshd_config: PermitRootLogin no"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no"
+- name: "/etc/ssh/sshd_config: PasswordAuthentication no"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no"
+- name: Restart SSHD
+  service: state=restarted name=ssh
+- name: "/etc/apt/apt.conf.d/10periodic"
+  template: src=roles/security/templates/unattended-upgrades.j2 dest=/etc/apt/apt.conf.d/10periodic
+- name: "/etc/cron.daily/00logwatch"
+  lineinfile: dest=/etc/cron.daily/00logwatch regexp="^/usr/sbin/logwatch" line="/usr/sbin/logwatch --output mail --mailto {{ security.email }} --detail high"

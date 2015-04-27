@@ -1,0 +1,76 @@
+- name: Install DSpam
+  apt: pkg=dspam state=latest
+- name: Install Dovecot AntiSpam
+  apt: pkg=dovecot-antispam state=latest
+- name: Install Postfix PCRE
+  apt: pkg=postfix-pcre state=latest
+- name: Install Dovecot Sieve
+  apt: pkg=dovecot-sieve state=latest
+- name: "/etc/dspam/dspam.conf: Home /decrypted-mail/dspam"
+  lineinfile: dest=/etc/dspam/dspam.conf regexp="^#?\s*Home\s" line="Home /mail/dspam"
+- name: "/etc/dspam/dspam.conf: TrustedDeliveryAgent \"/usr/sbin/sendmail\""
+  lineinfile: dest=/etc/dspam/dspam.conf regexp="^#?\s*TrustedDeliveryAgent\s" line='TrustedDeliveryAgent "/usr/sbin/sendmail"'
+- name: "/etc/dspam/dspam.conf: UntrustedDeliveryAgent \"/usr/lib/dovecot/deliver -d %u\""
+  lineinfile: dest=/etc/dspam/dspam.conf regexp="^#?\s*UntrustedDeliveryAgent\s" line='UntrustedDeliveryAgent "/usr/lib/dovecot/deliver -d %u"'
+- name: "/etc/dspam/dspam.conf: Tokenizer osb"
+  lineinfile: dest=/etc/dspam/dspam.conf regexp="^#?\s*Tokenizer\s" line="Tokenizer osb"
+- name: "/etc/dspam/dspam.conf: ParseToHeaders on"
+  lineinfile: dest=/etc/dspam/dspam.conf regexp="^#?\s*ParseToHeaders\s" line="ParseToHeaders on"
+- name: "/etc/dspam/dspam.conf: ChangeModeOnParse off"
+  lineinfile: dest=/etc/dspam/dspam.conf regexp="^#?\s*ChangeModeOnParse\s" line="ChangeModeOnParse off"
+- name: "/etc/dspam/dspam.conf: ChangeUserOnParse full"
+  lineinfile: dest=/etc/dspam/dspam.conf regexp="^#?\s*ChangeUserOnParse\s" line="ChangeUserOnParse full"
+- name: "/etc/dspam/dspam.conf: ServerPID \" /var/run/dspam/dspam.pid\""
+  lineinfile: dest=/etc/dspam/dspam.conf regexp="^#?\s*ServerPID\s" line='ServerPID "/var/run/dspam/dspam.pid"'
+- name: "/etc/dspam/dspam.conf: ServerDomainSocketPath \"/var/run/dspam/dspam.sock\""
+  lineinfile: dest=/etc/dspam/dspam.conf regexp="^#?\s*ServerDomainSocketPath\s" line='ServerDomainSocketPath "/var/run/dspam/dspam.sock"'
+- name: "/etc/dspam/dspam.conf: ClientHost \"/var/run/dspam/dspam.sock\""
+  lineinfile: dest=/etc/dspam/dspam.conf regexp="^#?\s*ClientHost\s" line='ClientHost /var/run/dspam/dspam.sock'
+- name: "/etc/dspam/dspam.conf: IgnoreHeader X-Spam-Status"
+  lineinfile: dest=/etc/dspam/dspam.conf line="IgnoreHeader X-Spam-Status"
+- name: "/etc/dspam/dspam.conf: IgnoreHeader X-Spam-Scanned"
+  lineinfile: dest=/etc/dspam/dspam.conf line="IgnoreHeader X-Spam-Scanned"
+- name: "/etc/dspam/dspam.conf: IgnoreHeader X-Virus-Scanner-Result"
+  lineinfile: dest=/etc/dspam/dspam.conf line="IgnoreHeader X-Virus-Scanner-Result"
+- name: "/etc/dspam/dspam.conf: IgnoreHeader X-Virus-Scanned"
+  lineinfile: dest=/etc/dspam/dspam.conf line="IgnoreHeader X-Virus-Scanned"
+- name: "/etc/dspam/dspam.conf: IgnoreHeader X-DKIM"
+  lineinfile: dest=/etc/dspam/dspam.conf line="IgnoreHeader X-DKIM"
+- name: "/etc/dspam/dspam.conf: IgnoreHeader DKIM-Signature"
+  lineinfile: dest=/etc/dspam/dspam.conf line="IgnoreHeader DKIM-Signature"
+- name: "/etc/dspam/dspam.conf: IgnoreHeader DomainKey-Signature"
+  lineinfile: dest=/etc/dspam/dspam.conf line="IgnoreHeader DomainKey-Signature"
+- name: "/etc/dspam/dspam.conf: IgnoreHeader X-Google-Dkim-Signature"
+  lineinfile: dest=/etc/dspam/dspam.conf line="IgnoreHeader X-Google-Dkim-Signature"
+- name: "/mail/dspam"
+  file: path=/mail/dspam state=directory owner=dspam group=dspam
+- name: "/etc/dspam/default.prefs: spamAction=deliver"
+  lineinfile: dest=/etc/dspam/default.prefs regexp="^\s*#?\s*spamAction\s*=" line="spamAction=deliver"
+- name: "/etc/dspam/default.prefs: signatureLocation=headers"
+  lineinfile: dest=/etc/dspam/default.prefs regexp="^\s*#?\s*signatureLocation\s*=" line="signatureLocation=headers"
+- name: "/etc/dspam/default.prefs: showFactors=on"
+  lineinfile: dest=/etc/dspam/default.prefs regexp="^\s*#?\s*showFactors\s*=" line="showFactors=on"
+- name: "/etc/postfix/master.cf: dspam rule"
+  lineinfile: dest=/etc/postfix/master.cf line="dspam     unix  -       n       n       -       10      pipe\n  flags=Ru user=dspam argv=/usr/bin/dspam --deliver=innocent,spam --user $recipient -i -f $sender -- $recipient\ndovecot   unix  -       n       n       -       -       pipe\n  flags=DRhu user=mail:mail argv=/usr/lib/dovecot/deliver -f ${sender} -d ${recipient}"
+- name: "/etc/postfix/dspam_filter_access"
+  template: src=roles/dspam/templates/dspam_filter_access.j2 dest=/etc/postfix/dspam_filter_access
+- name: "/etc/postfix/main.cf: dspam_destination_recipient_limit = 1"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^\s*#?\s*dspam_destination_recipient_limit\s*=" line="dspam_destination_recipient_limit = 1"
+- name: "/etc/postfix/main.cf: smtpd_client_restrictions = permit_sasl_authenticated check_client_access pcre:/etc/postfix/dspam_filter_access"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^\s*#?\s*smtpd_client_restrictions\s*=" line="smtpd_client_restrictions = permit_sasl_authenticated check_client_access pcre:/etc/postfix/dspam_filter_access"
+- name: "/etc/dovecot/conf.d/20-imap.conf: protocol lmtp {\n  mail_plugins = $mail_plugins sieve\n}"
+  lineinfile: dest=/etc/dovecot/conf.d/20-imap.conf line="protocol lmtp {\n  mail_plugins = $mail_plugins sieve\n}"
+- name: "/etc/dovecot/conf.d/90-plugin.conf"
+  template: src=roles/dspam/templates/90-plugin.conf.j2 dest=/etc/dovecot/conf.d/90-plugin.conf
+- name: "/tmp/dspam-sieve"
+  template: src=roles/dspam/templates/dspam-sieve.j2 dest=/tmp/dspam-sieve
+- name: "Run dspam-sieve"
+  shell: bash /tmp/dspam-sieve
+- name: "/tmp/dspam-sieve: remove"
+  file: path=/tmp/dspam-sieve state=absent
+- name: Restart Postfix
+  service: state=restarted name=postfix
+- name: Restart Dovecot
+  service: state=restarted name=dovecot
+- name: Restart DSpam
+  service: state=restarted name=dspam

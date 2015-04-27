@@ -1,0 +1,4 @@
+- name: "/etc/ssl/certs/this-machine.pem"
+  template: src=certs-this-machine.pem dest=/etc/ssl/certs/this-machine.pem
+- name: "/etc/ssl/private/this-machine.pem"
+  template: src=private-this-machine.pem dest=/etc/ssl/private/this-machine.pem

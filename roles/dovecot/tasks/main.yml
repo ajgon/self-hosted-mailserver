@@ -1,0 +1,62 @@
+- name: Install dovecot
+  apt: pkg=dovecot-core state=latest
+- name: Install dovecot-imapd
+  apt: pkg=dovecot-imapd state=latest
+- name: Install dovecot-lmtpd
+  apt: pkg=dovecot-lmtpd state=latest
+- name: Install dovecot-mysql
+  apt: pkg=dovecot-mysql state=latest
+- name: Install python-mysqldb
+  apt: pkg=python-mysqldb state=latest
+- name: "/etc/dovecot/dovecot.conf: protocols = imap lmtp"
+  lineinfile: dest=/etc/dovecot/dovecot.conf regexp="^protocols\s*=" line="protocols = imap lmtp"
+- name: "/etc/dovecot/conf.d/10-mail.conf: mail_location = maildir:/mail/%d/%n"
+  lineinfile: dest=/etc/dovecot/conf.d/10-mail.conf regexp="^#?\s*mail_location\s*=" line="mail_location = maildir:/mail/%d/%n"
+- name: "/etc/dovecot/conf.d/10-mail.conf: mail_privileged_group = mail"
+  lineinfile: dest=/etc/dovecot/conf.d/10-mail.conf regexp="^#?\s*mail_privileged_group\s*=" line="mail_privileged_group = mail"
+- name: "/etc/dovecot/conf.d/10-mail.conf: first_valid_uid = 0"
+  lineinfile: dest=/etc/dovecot/conf.d/10-mail.conf regexp="^#?\s*first_valid_uid\s*=" line="first_valid_uid = 0"
+- name: "/etc/dovecot/conf.d/10-auth.conf: disable_plaintext_auth = yes"
+  lineinfile: dest=/etc/dovecot/conf.d/10-auth.conf regexp="^#?\s*disable_plaintext_auth\s*=" line="disable_plaintext_auth = yes"
+- name: "/etc/dovecot/conf.d/10-auth.conf: auth_mechanisms = plain login"
+  lineinfile: dest=/etc/dovecot/conf.d/10-auth.conf regexp="^#?\s*auth_mechanisms\s*=" line="auth_mechanisms = plain login"
+- name: "/etc/dovecot/conf.d/10-auth.conf: #!include auth-system.conf.ext"
+  lineinfile: dest=/etc/dovecot/conf.d/10-auth.conf regexp="^#?\s*!include auth-system.conf.ext" line="#!include auth-system.conf.ext"
+- name: "/etc/dovecot/conf.d/10-auth.conf: !include auth-sql.conf.ext"
+  lineinfile: dest=/etc/dovecot/conf.d/10-auth.conf regexp="^#?\s*!include auth-sql.conf.ext" line="!include auth-sql.conf.ext"
+- name: "/etc/dovecot/conf.d/15-lda.conf: postmaster_address"
+  lineinfile: dest=/etc/dovecot/conf.d/15-lda.conf regexp="^#?\s*postmaster_address\s*=" line="postmaster_address = {{ maildb.postmaster_email }}"
+- name: "/etc/dovecot/conf.d/auth-sql.conf.ext"
+  template: src=roles/dovecot/templates/auth-sql.conf.ext.j2 dest=/etc/dovecot/conf.d/auth-sql.conf.ext
+- name: "/etc/dovecot/dovecot-sql.conf.ext"
+  template: src=roles/dovecot/templates/dovecot-sql.conf.ext.j2 dest=/etc/dovecot/dovecot-sql.conf.ext
+- name: "/etc/dovecot/conf.d/10-master.conf"
+  template: src=roles/dovecot/templates/10-master.conf.j2 dest=/etc/dovecot/conf.d/10-master.conf
+- name: "/etc/dovecot/conf.d/10-ssl.conf"
+  lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_cert\s*=" line="ssl_cert = </etc/ssl/certs/this-machine.pem"
+- name: "/etc/dovecot/conf.d/10-ssl.conf"
+  lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_key\s*=" line="ssl_key = </etc/ssl/private/this-machine.pem"
+- name: "/etc/dovecot/conf.d/10-ssl.conf"
+  lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl\s*=" line="ssl = required"
+- name: "/etc/dovecot: mail:dovecot o-rwx"
+  file: path=/etc/dovecot owner=mail group=dovecot mode="o-rwx"
+- name: "/tmp/create-imap-dirs"
+  template: src=roles/dovecot/templates/create-imap-dirs.j2 dest=/tmp/create-imap-dirs
+- name: "Run create-imap-dirs"
+  shell: bash /tmp/create-imap-dirs
+- name: "/tmp/create-imap-dirs: remove"
+  file: path=/tmp/create-imap-dirs state=absent
+- name: "/tmp/mail-users.sql"
+  template: src=roles/dovecot/templates/mail-users.sql.j2 dest=/tmp/mail-users.sql
+- name: "/tmp/passwords-inserter"
+  template: src=roles/dovecot/templates/passwords-inserter.j2 dest=/tmp/passwords-inserter
+- name: Execute passwords inserter
+  shell: bash /tmp/passwords-inserter
+- name: Import mailserver database
+  mysql_db: name={{ maildb.database  }} state=import target=/tmp/mail-users.sql
+- name: "/tmp/mail-users.sql: remove"
+  file: path=/tmp/mail-users.sql state=absent
+- name: "/tmp/passwords-inserter: remove"
+  file: path=/tmp/passwords-inserter state=absent
+- name: Restart dovecot
+  service: state=restarted name=dovecot
