@@ -14,10 +14,13 @@
   lineinfile: dest=/usr/share/d-push/backend/imap.php regexp="else if\(\$lid == \"trash\"\)" line="else if($lid == \"trash\" || $lid=\"deleted messages\") {"
 - name: '/mail/dpush-state: create'
   file: path=/mail/dpush-state state=directory owner=www-data group=www-data mode=0770
-- name: '/etc/nginx/sites-available/z-push'
-  template: src=roles/zpush/templates/z-push.j2 dest=/etc/nginx/sites-available/z-push
-- name: '/etc/nginx/sites-enabled/z-push'
-  file: src=/etc/nginx/sites-available/z-push dest=/etc/nginx/sites-enabled/z-push state=link
+- name: '/etc/nginx/extra'
+  file: path=/etc/nginx/extra state=directory
+- name: '/etc/nginx/extra/z-push'
+  template: src=roles/zpush/templates/z-push.j2 dest=/etc/nginx/extra/z-push
+- name: 'Enable z-push in nginx'
+  lineinfile: dest=/etc/nginx/sites-available/mail regexp='# include extra/z-push;' line='    include extra/z-push;'
 - name: Restart nginx
   service: state=restarted name=nginx
-
+- name: Restart php5-fpm
+  service: state=restarted name=php5-fpm

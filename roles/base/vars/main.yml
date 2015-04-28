@@ -1,2 +1,2 @@
-# Passwor for root user of MySQL database. MySQL is not enabled to external connections, yet it's still a good idea to put something complicated here!
+# Password for root user of MySQL database. MySQL is not enabled to external connections, yet it's still a good idea to put something complicated here!
 mysql_root_password: ""

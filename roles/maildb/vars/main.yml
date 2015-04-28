@@ -2,11 +2,11 @@ maildb:
   # This email should be a local email (i.e. listed below in users section for any domain). It will receive all failure messages from MAILER-DAEMON.
   postmaster_email: ""
   # MySQL user username for mailserver database (use different than root!)
-  username: ""
+  username: "mailuser"
   # MySQL user password for mailserver database
   password: ""
   # MySQL database name for mailserver
-  database: ""
+  database: "mailserver"
   # List of mail domains (you can put as many as you like)
   domains: ""
       # Domain name (i.e. example.com)

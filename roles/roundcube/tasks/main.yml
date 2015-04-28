@@ -1,0 +1,34 @@
+- name: Install Roundcube Webmail
+  apt: pkg=roundcube state=latest
+- name: Add roundcube MySQL database
+  mysql_db: name={{ roundcube.database }}
+- name: Import roundcube MySQL database
+  mysql_db: name={{ roundcube.database }} state=import target=/usr/share/dbconfig-common/data/roundcube/install/mysql
+- name: Add roundcube MySQL user
+  mysql_user: name={{ roundcube.username }} password="{{ roundcube.password }}" priv="{{ roundcube.database }}.*:ALL"
+- name: "/etc/roundcube/debian-db.php: $dbuser"
+  lineinfile: dest=/etc/roundcube/debian-db.php regexp="^#?\s*\$dbuser\s*=" line="$dbuser='{{ roundcube.username }}';"
+- name: "/etc/roundcube/debian-db.php: $dbpass"
+  lineinfile: dest=/etc/roundcube/debian-db.php regexp="^#?\s*\$dbpass\s*=" line="$dbpass='{{ roundcube.password }}';"
+- name: "/etc/roundcube/debian-db.php: $basepath"
+  lineinfile: dest=/etc/roundcube/debian-db.php regexp="^#?\s*\$basepath\s*=" line="$basepath='{{ roundcube.basepath }}';"
+- name: "/etc/roundcube/debian-db.php: $dbserver"
+  lineinfile: dest=/etc/roundcube/debian-db.php regexp="^#?\s*\$dbserver\s*=" line="$dbserver=\'\';"
+- name: "/etc/roundcube/debian-db.php: $dbport"
+  lineinfile: dest=/etc/roundcube/debian-db.php regexp="^#?\s*\$dbport\s*=" line="$dbport=\'\';"
+- name: "/etc/roundcube/debian-db.php: $dbtype"
+  lineinfile: dest=/etc/roundcube/debian-db.php regexp="^#?\s*\$dbtype\s*=" line="$dbtype='mysql';"
+- name: "/etc/roundcube/main.inc.php: default_host"
+  lineinfile: dest=/etc/roundcube/main.inc.php regexp="^#?\s*\$rcmail_config\['default_host'\]\s*=" line="$rcmail_config['default_host'] = array('ssl://localhost:993');"
+- name: Enable PHP MCrypt
+  file: src=/etc/php5/mods-available/mcrypt.ini dest=/etc/php5/fpm/conf.d/20-mcrypt.ini state=link
+- name: '/etc/nginx/extra'
+  file: path=/etc/nginx/extra state=directory
+- name: '/etc/nginx/extra/roundcube'
+  template: src=roles/roundcube/templates/roundcube.j2 dest=/etc/nginx/extra/roundcube
+- name: 'Enable roundcube in nginx'
+  lineinfile: dest=/etc/nginx/sites-available/mail regexp='# include extra/roundcube;' line='    include extra/roundcube;'
+- name: Restart nginx
+  service: state=restarted name=nginx
+- name: Restart php5-fpm
+  service: state=restarted name=php5-fpm

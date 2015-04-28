@@ -5,10 +5,14 @@ This set of scripts was based on those excellent articles:
 * [My First 5 Minutes On A Server; Or, Essential Security for Linux Servers](http://plusbryan.com/my-first-5-minutes-on-a-server-or-essential-security-for-linux-servers)
 * [NSA-proof your e-mail in 2 hours](http://sealedabstract.com/code/nsa-proof-your-e-mail-in-2-hours/)
 
-with two exceptions:
+with some exceptions:
 
 * no EncFS - because it's pointless
 * no full text search - beacuse it's JAVA
+* added Roundcube - because you might need your email the less you expect it
+
+Those rules were written with Debian in mind, and were tested in 7.0 (Wheezy) and 8.0 (Jessie). They should also
+work on Ubuntu, but I didn't try it and [you shouldn't too](https://gnu.org/philosophy/ubuntu-spyware.html).
 
 ## Install
 

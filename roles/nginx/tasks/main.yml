@@ -2,3 +2,7 @@
   apt: pkg=nginx state=latest
 - name: '/etc/nginx/sites-enabled/default: remove'
   file: path=/etc/nginx/sites-enabled/default state=absent
+- name: 'Install mail vhost'
+  template: src=roles/nginx/templates/mail.j2 dest=/etc/nginx/sites-available/mail
+- name: '/etc/nginx/sites-enabled/mail'
+  file: src=/etc/nginx/sites-available/mail dest=/etc/nginx/sites-enabled/mail state=link

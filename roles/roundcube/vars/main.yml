@@ -1,0 +1,9 @@
+roundcube:
+  # MySQL user username for roundcube database (use different than root!)
+  username: "roundcube"
+  # MySQL user password for mailserver database
+  password:
+  # MySQL database name for roundcube
+  database: "roundcube"
+  # Path which will be used to access to roundcube (i.e. "/mail" will result with https://host/mail, leave at least "/" there)
+  basepath: "/mail"

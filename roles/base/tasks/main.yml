@@ -1,3 +1,5 @@
+- name: Add wheezy packages
+  lineinfile: dest=/etc/apt/sources.list line="deb http://ftp.debian.org/debian wheezy main non-free contrib\ndeb-src http://ftp.debian.org/debian wheezy main non-free contrib"
 - name: Update distro
   apt: update_cache=yes upgrade=yes
 - name: Disable recommended packages
@@ -8,6 +10,10 @@
   apt: pkg=mysql-server state=latest
 - name: Install python-mysqldb
   apt: pkg=python-mysqldb state=latest
+- name: Enable english locales
+  lineinfile: dest=/etc/locale.gen regexp="^#?\s*en_US.UTF-8\s*UTF-8" line="en_US.UTF-8 UTF-8"
+- name: Regenerate locales
+  shell: locale-gen
 - name: Set MySQL root password
   mysql_user: name=root password={{ mysql_root_password }}
 - name: "/root/.my.cnf"

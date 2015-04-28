@@ -1,0 +1,24 @@
+server {
+    listen 443 default_server;
+    listen [::]:443 default_server ipv6only=on;
+
+{% for domain in maildb.domains %}
+{% if domain.primary %}
+    server_name {{ domain.name }};
+{% endif %}
+{% endfor %}
+
+    ssl on;
+    ssl_certificate /etc/ssl/certs/this-machine.pem;
+    ssl_certificate_key /etc/ssl/private/this-machine.pem;
+
+    # include extra/z-push;
+    # include extra/roundcube;
+}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server ipv6only=on;
+
+    rewrite ^ https://$http_host$request_uri permanent;
+}
