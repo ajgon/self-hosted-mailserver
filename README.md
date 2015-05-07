@@ -10,6 +10,7 @@ with some exceptions:
 * no EncFS - because it's pointless
 * no full text search - beacuse it's JAVA
 * added Roundcube - because you might need your email the less you expect it
+* added ddclient - since mobile hardware needs mobile support
 
 Those rules were written with Debian in mind, and were tested in 7.0 (Wheezy) and 8.0 (Jessie). They should also
 work on Ubuntu, but I didn't try it and [you shouldn't too](https://gnu.org/philosophy/ubuntu-spyware.html).
@@ -38,7 +39,8 @@ Next, you need to configure your new system(s) variables:
 
 and add your SSL certificates to `roles/ssl/templates/certs-this-machine.pem` and `roles/ssl/templates/private-this-machine.pem`.
 I strongly recommed to use trusted certificate (for example from [here](https://www.startssl.com/?app=1)), but you can
-also create a self-signed one.
+also create a self-signed one. Last thing you need to configure is `roles/ddclient/templates/ddclient.conf.j2` for
+`ddclient` (or disable it in `main.yml` if you won't need it).
 
 And you're ready to rock!
 

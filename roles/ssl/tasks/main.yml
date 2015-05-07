@@ -1,3 +1,5 @@
+- name: "Install ca certificates"
+  apt: pkg=ca-certificates state=latest
 - name: "/etc/ssl/certs/this-machine.pem"
   template: src=certs-this-machine.pem dest=/etc/ssl/certs/this-machine.pem
 - name: "/etc/ssl/private/this-machine.pem"

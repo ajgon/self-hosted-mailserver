@@ -1,0 +1,18 @@
+- name: Install ddclient
+  apt: pkg=ddclient state=latest
+- name: Install libjson-any-perl
+  apt: pkg=libjson-any-perl state=latest
+- name: Install libio-socket-ssl-perl
+  apt: pkg=libio-socket-ssl-perl state=latest
+- name: Install patch
+  apt: pkg=patch state=latest
+- name: "upload ddclient patch"
+  template: src=roles/ddclient/templates/cloudflare.patch.j2 dest=/tmp/cloudflare.patch
+- name: "apply ddclient patch"
+  shell: patch -p0 `which ddclient` < /tmp/cloudflare.patch
+- name: "remove ddclient patch"
+  file: path=/tmp/cloudflare.patch state=absent
+- name: "upload ddclient config"
+  template: src=roles/ddclient/templates/ddclient.conf.j2 dest=/etc/ddclient.conf
+- name: "restart ddclient"
+  service: state=restarted name=ddclient
