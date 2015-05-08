@@ -7,3 +7,5 @@ roundcube:
   database: "roundcube"
   # Path which will be used to access to roundcube (i.e. "/mail" will result with https://host/mail, leave at least "/" there)
   basepath: "/mail"
+  # IMAP Host/URL:Port (Roundcube format i.e. ssl://my.host:993)
+  defaulthost: ""
