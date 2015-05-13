@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 {% for domain in maildb.domains %}
-opendkim-genkey -r -h rsa-sha256 -d {{ domain.name }} -s mail -D /etc/opendkim
+opendkim-genkey -r -h sha256 -d {{ domain.name }} -s mail -D /etc/opendkim
 mv /etc/opendkim/mail.private /etc/opendkim/{{ domain.name }}
 mv /etc/opendkim/mail.txt /etc/opendkim/{{ domain.name }}.txt
 {% endfor %}
