@@ -8,7 +8,7 @@ maildb:
   # MySQL database name for mailserver
   database: "mailserver"
   # List of mail domains (you can put as many as you like)
-  domains: ""
+  domains:
       # Domain name (i.e. example.com)
     - name: ""
       # Is this primary domain (if you wish to receive PUSH notifications from it, you should set it to yes)
