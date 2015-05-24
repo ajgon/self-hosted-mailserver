@@ -14,12 +14,6 @@ maildb:
       # Is this primary domain (if you wish to receive PUSH notifications from it, you should set it to yes)
       primary: yes
       # List of users associated with that domain
-      users: []
-      # Domain name (i.e. example.com)
-    - name: ""
-      # Is this primary domain (if you wish to receive PUSH notifications from it, you should set it to yes)
-      primary: no
-      # List of users associated with that domain
       users:
       # User email - use full email address (i.e. steven@example.com)
       - email: ""
