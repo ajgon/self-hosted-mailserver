@@ -4,3 +4,5 @@
   template: src=certs-this-machine.pem dest=/etc/ssl/certs/this-machine.pem
 - name: "/etc/ssl/private/this-machine.pem"
   template: src=private-this-machine.pem dest=/etc/ssl/private/this-machine.pem
+- name: "/etc/ssl/dhparams.pem"
+  shell: openssl dhparam -out /etc/ssl/dhparams.pem 4096

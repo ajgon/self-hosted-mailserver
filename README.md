@@ -4,6 +4,7 @@ A set of ansible scripts, to set up fully functional, self-hosted mailserver.
 This set of scripts was based on those excellent articles:
 * [My First 5 Minutes On A Server; Or, Essential Security for Linux Servers](http://plusbryan.com/my-first-5-minutes-on-a-server-or-essential-security-for-linux-servers)
 * [NSA-proof your e-mail in 2 hours](http://sealedabstract.com/code/nsa-proof-your-e-mail-in-2-hours/)
+* [Strong Ciphers for Apache, nginx and Lighttpd](https://cipherli.st/)
 
 with some exceptions:
 
