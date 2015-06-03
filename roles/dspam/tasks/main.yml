@@ -58,6 +58,8 @@
   lineinfile: dest=/etc/postfix/main.cf regexp="^\s*#?\s*dspam_destination_recipient_limit\s*=" line="dspam_destination_recipient_limit = 1"
 - name: "/etc/postfix/main.cf: smtpd_client_restrictions = permit_sasl_authenticated check_client_access pcre:/etc/postfix/dspam_filter_access"
   lineinfile: dest=/etc/postfix/main.cf regexp="^\s*#?\s*smtpd_client_restrictions\s*=" line="smtpd_client_restrictions = permit_sasl_authenticated check_client_access pcre:/etc/postfix/dspam_filter_access"
+- name: "/etc/dovecot/conf.d/20-imap.conf: protocol imap {\n  mail_plugins = $mail_plugins antispam\n}"
+  lineinfile: dest=/etc/dovecot/conf.d/20-imap.conf regexp="^\s*#?\s*mail_plugins\s*=" line="mail_plugins = $mail_plugins antispam"
 - name: "/etc/dovecot/conf.d/20-imap.conf: protocol lmtp {\n  mail_plugins = $mail_plugins sieve\n}"
   lineinfile: dest=/etc/dovecot/conf.d/20-imap.conf line="protocol lmtp {\n  mail_plugins = $mail_plugins sieve\n}"
 - name: "/etc/dovecot/conf.d/90-plugin.conf"
