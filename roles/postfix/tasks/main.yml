@@ -42,6 +42,8 @@
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*virtual_mailbox_maps\s*=" line="virtual_mailbox_maps = mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf"
 - name: "/etc/postfix/main.cf: virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-alias-maps.cf"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*virtual_alias_maps\s*=" line="virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-alias-maps.cf"
+- name: "/etc/postfix/main.cf: message_size_limit = 2147483648"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*message_size_limit\s=" line="message_size_limit = 2147483648"
 - name: "/etc/postfix/main.cf: local_recipient_maps = $virtual_mailbox_maps"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*local_recipient_maps\s=" line="local_recipient_maps = $virtual_mailbox_maps"
 - name: "/etc/postfix/master.cf: enable smtps"
