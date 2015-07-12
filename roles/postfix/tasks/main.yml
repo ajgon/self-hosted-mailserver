@@ -44,6 +44,8 @@
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*virtual_alias_maps\s*=" line="virtual_alias_maps = mysql:/etc/postfix/mysql-virtual-alias-maps.cf"
 - name: "/etc/postfix/main.cf: local_recipient_maps = $virtual_mailbox_maps"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*local_recipient_maps\s=" line="local_recipient_maps = $virtual_mailbox_maps"
+- name: "/etc/postfix/master.cf: enable smtps"
+  lineinfile: dest=/etc/postfix/main.cf line="smtps     inet  n       -       -       -       -       smtpd\n  -o syslog_name=postfix/smtps\n  -o smtpd_tls_wrappermode=yes\n  -o smtpd_sasl_auth_enable=yes\n  -o smtpd_reject_unlisted_recipient=no\n  -o smtpd_client_restrictions=$mua_client_restrictions\n  -o smtpd_helo_restrictions=$mua_helo_restrictions\n  -o smtpd_sender_restrictions=$mua_sender_restrictions\n  -o smtpd_recipient_restrictions=\n  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject\n  -o milter_macro_daemon_name=ORIGINATING"
 - name: "/etc/postfix/mysql-virtual-mailbox-domains.cf"
   template: src=roles/postfix/templates/mysql-virtual-mailbox-domains.cf.j2 dest=/etc/postfix/mysql-virtual-mailbox-domains.cf
 - name: "/etc/postfix/mysql-virtual-mailbox-maps.cf"
