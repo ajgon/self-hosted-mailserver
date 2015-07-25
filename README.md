@@ -5,6 +5,7 @@ This set of scripts was based on those excellent articles:
 * [My First 5 Minutes On A Server; Or, Essential Security for Linux Servers](http://plusbryan.com/my-first-5-minutes-on-a-server-or-essential-security-for-linux-servers)
 * [NSA-proof your e-mail in 2 hours](http://sealedabstract.com/code/nsa-proof-your-e-mail-in-2-hours/)
 * [Strong Ciphers for Apache, nginx and Lighttpd](https://cipherli.st/)
+* [How To Use Duplicity with GPG to Securely Automate Backups](https://www.digitalocean.com/community/tutorials/how-to-use-duplicity-with-gpg-to-securely-automate-backups-on-ubuntu)
 
 with some exceptions:
 
@@ -36,7 +37,7 @@ the remotes.
 
 Next, you need to configure your new system(s) variables:
 
-    for role in base maildb security; do vi roles/${role}/vars/main.yml; done
+    for role in base duplicity maildb security; do vi roles/${role}/vars/main.yml; done
 
 and add your SSL certificates to `roles/ssl/templates/certs-this-machine.pem` and `roles/ssl/templates/private-this-machine.pem`.
 I strongly recommed to use trusted certificate (for example from [here](https://www.startssl.com/?app=1)), but you can

@@ -1,0 +1,9 @@
+duplicity:
+  # WebDav host and path, where backups will be stored (for example, for box.com it is dav.box.com/dav)
+  webdav_host_path: ""
+  # WebDav Username
+  webdav_username: ""
+  # WebDav Password
+  webdav_password: ""
+  # Encrypt key ID - A GnuPG secret key ID, which will be used for encrypting your duplicity backups (8-digit hex number)
+  encrypt_key: ""

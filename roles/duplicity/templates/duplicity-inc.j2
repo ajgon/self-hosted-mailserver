@@ -1,0 +1,10 @@
+#!/bin/sh
+
+test -x $(which duplicity) || exit 0
+. /root/.passphrase
+
+export WEBDAV_USERNAME
+export WEBDAV_PASSWORD
+export WEBDAV_HOST_PATH
+
+$(which duplicity) --ssl-no-check-certificate --encrypt-key {{ duplicity.encrypt_key }} /mail/ webdavs://${WEBDAV_USERNAME}:${WEBDAV_PASSWORD}@${WEBDAV_HOST_PATH}/mail-backup

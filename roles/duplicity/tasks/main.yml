@@ -1,0 +1,14 @@
+- name: Install ddclient
+  apt: pkg=duplicity state=latest
+- name: '/etc/cron.daily/duplicity-inc'
+  template: src=roles/duplicity/templates/duplicity-inc.j2 dest=/etc/cron.daily/duplicity-inc
+- name: 'root:root 700 /etc/cron.daily/duplicity-inc'
+  file: path=/etc/cron.daily/duplicity-inc mode=0700 owner=root group=root
+- name: '/etc/cron.weekly/duplicity-full'
+  template: src=roles/duplicity/templates/duplicity-full.j2 dest=/etc/cron.weekly/duplicity-full
+- name: 'root:root 700 /etc/cron.weekly/duplicity-full'
+  file: path=/etc/cron.weekly/duplicity-full mode=0700 owner=root group=root
+- name: '/root/.passphrase'
+  template: src=roles/duplicity/templates/passphrase.j2 dest=/root/.passphrase
+- name: 'root:root 700 /root/.passphrase'
+  file: path=/root/.passphrase mode=0700 owner=root group=root
