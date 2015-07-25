@@ -24,3 +24,20 @@
   template: src=roles/security/templates/unattended-upgrades.j2 dest=/etc/apt/apt.conf.d/10periodic
 - name: "/etc/cron.daily/00logwatch"
   lineinfile: dest=/etc/cron.daily/00logwatch regexp="^/usr/sbin/logwatch" line="/usr/sbin/logwatch --output mail --mailto {{ security.email }} --detail high"
+- name: "Create local jail for fail2ban"
+  shell: cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+- name: "/etc/fail2ban/jail.local - security email"
+  lineinfile: dest=/etc/fail2ban/jail.local regexp="^#?s*destemail\s*=" line="destemail = {{ security.email }}"
+- name: "/etc/fail2ban/jail.local - enable emails"
+  lineinfile: dest=/etc/fail2ban/jail.local regexp="^#?s*action\s*=\s*\%\(action_" line="action = %(action_mwl)s"
+- name: "/etc/fail2ban/jail.local - enable ssh watcher"
+  replace: dest=/etc/fail2ban/jail.local regexp="\[ssh\]\n*enabled\s*=[^\n]*" replace="[ssh]\n\nenabled = true"
+- name: "/etc/fail2ban/jail.local - enable ssh-ddos watcher"
+  replace: dest=/etc/fail2ban/jail.local regexp="\[ssh-ddos\]\n*enabled\s*=[^\n]*" replace="[ssh-ddos]\n\nenabled = true"
+- name: "/etc/fail2ban/jail.local - enable nginx-http-auth watcher"
+  replace: dest=/etc/fail2ban/jail.local regexp="\[nginx-http-auth\]\n*enabled\s*=[^\n]*" replace="[nginx-http-auth]\n\nenabled = true"
+- name: "/etc/fail2ban/jail.local - enable postfix watcher"
+  replace: dest=/etc/fail2ban/jail.local regexp="\[postfix\]\n*enabled\s*=[^\n]*" replace="[postfix]\n\nenabled = true"
+- name: "/etc/fail2ban/jail.local - enable dovecot watcher"
+  replace: dest=/etc/fail2ban/jail.local regexp="\[dovecot\]\n*enabled\s*=[^\n]*" replace="[dovecot]\n\nenabled = true"
+
