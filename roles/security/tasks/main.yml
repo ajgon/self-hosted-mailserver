@@ -40,4 +40,6 @@
   replace: dest=/etc/fail2ban/jail.local regexp="\[postfix\]\n*enabled\s*=[^\n]*" replace="[postfix]\n\nenabled = true"
 - name: "/etc/fail2ban/jail.local - enable dovecot watcher"
   replace: dest=/etc/fail2ban/jail.local regexp="\[dovecot\]\n*enabled\s*=[^\n]*" replace="[dovecot]\n\nenabled = true"
+- name: "/etc/fail2ban/jail.local - enable recidive watcher"
+  replace: dest=/etc/fail2ban/jail.local regexp="\[recidive\]\n*enabled\s*=[^\n]*" replace="[recidive]\n\nenabled = true"
 
