@@ -19,3 +19,7 @@ maildb:
       - email: ""
       # Email password
         password: ""
+      # List aliases associated with that domain (every mail coming to 'from' email will be delivered to 'to' email instead)
+      aliases:
+      - from: ""
+        to: ""

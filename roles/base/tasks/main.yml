@@ -22,4 +22,3 @@
   mysql_user: name=root password={{ mysql_root_password }}
 - name: "/root/.my.cnf"
   template: src=roles/base/templates/my.cnf.j2 dest=/root/.my.cnf
-
