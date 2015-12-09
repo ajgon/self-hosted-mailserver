@@ -7,3 +7,5 @@ security:
   user_publickey: ""
   # Security email - all security concerns will be delivered there, it's a good idea to use email stored on some external source, devoted only for that purpouse
   email: ""
+  # Generate strong primes for SSH, and SSL. Takes a long time, but disabling it is NOT recommended.
+  strong_primes: true

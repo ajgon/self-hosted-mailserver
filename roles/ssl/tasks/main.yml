@@ -4,5 +4,9 @@
   template: src=certs-this-machine.pem dest=/etc/ssl/certs/this-machine.pem
 - name: "/etc/ssl/private/this-machine.pem"
   template: src=private-this-machine.pem dest=/etc/ssl/private/this-machine.pem
-- name: "/etc/ssl/dhparams.pem"
+- name: "/etc/ssl/dhparams.pem (strong)"
   shell: openssl dhparam -out /etc/ssl/dhparams.pem 4096
+  when: security.strong_primes
+- name: "/etc/ssl/dhparams.pem (weak)"
+  shell: openssl dhparam -out /etc/ssl/dhparams.pem 1024
+  when: not security.strong_primes

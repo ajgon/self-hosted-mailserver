@@ -44,6 +44,8 @@
   lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_cipher_list\s*=" line="ssl_cipher_list = AES128+EECDH:AES128+EDH"
 - name: "/etc/dovecot/conf.d/10-ssl.conf"
   lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_prefer_server_ciphers\s*=" line="ssl_prefer_server_ciphers = yes"
+- name: "/etc/dovecot/conf.d/10-ssl.conf"
+  lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_dh_parameters_length\s*=" line="ssl_dh_parameters_length = 2048"
 - name: "/etc/dovecot/conf.d/20-imap.conf"
   lineinfile: dest=/etc/dovecot/conf.d/20-imap.conf regexp="^#?\s*imap_idle_notify_interval\s*=" line="imap_idle_notify_interval = 2 mins"
 - name: "/etc/dovecot: mail:dovecot o-rwx"

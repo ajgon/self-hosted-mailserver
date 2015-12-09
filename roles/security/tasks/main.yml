@@ -14,10 +14,30 @@
   template: src=roles/security/templates/authorized_keys.j2 dest="~{{ security.user_login }}/.ssh/authorized_keys" owner="{{ security.user_login }}" mode=0400
 - name: "/etc/sudoers"
   template: src=roles/security/templates/sudoers.j2 dest=/etc/sudoers
+- name: "/etc/ssh/sshd_config: Protocol 2"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^Protocol " line="Protocol 2"
 - name: "/etc/ssh/sshd_config: PermitRootLogin no"
   lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no"
 - name: "/etc/ssh/sshd_config: PasswordAuthentication no"
   lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no"
+- name: "/etc/ssh/sshd_config: ChallengeResponseAuthentication no"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^ChallengeResponseAuthentication" line="ChallengeResponseAuthentication no"
+- name: "/etc/ssh/sshd_config: KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^KexAlgorithms" line="KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256"
+- name: "/etc/ssh/sshd_config: #HostKey /etc/ssh/ssh_host_dsa_key"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^HostKey /etc/ssh/ssh_host_dsa_key" line="#HostKey /etc/ssh/ssh_host_dsa_key"
+- name: "/etc/ssh/sshd_config: #HostKey /etc/ssh/ssh_host_ecdsa_key"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^HostKey /etc/ssh/ssh_host_ecdsa_key" line="#HostKey /etc/ssh/ssh_host_ecdsa_key"
+- name: "/etc/ssh/sshd_config: Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^Ciphers" line="Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+- name: "/etc/ssh/sshd_config: MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^MACs" line="MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com"
+- name: "Generate strong moduli keys (takes a very, VERY long time - up to several hours)"
+  shell: "ssh-keygen -G /etc/ssh/moduli.all -b 4096 && ssh-keygen -T /etc/ssh/moduli.safe -f /etc/ssh/moduli.all && mv /etc/ssh/moduli.safe /etc/ssh/moduli && rm /etc/ssh/moduli.all"
+  when: security.strong_primes
+- name: "Generate strong rsa and ed25519 keys"
+  shell: "rm /etc/ssh/ssh_host_*key* && ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key < /dev/null && ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key < /dev/null && chmod 600 /etc/ssh/ssh_host_*key"
+  when: security.strong_primes
 - name: Restart SSHD
   service: state=restarted name=ssh
 - name: "/etc/apt/apt.conf.d/10periodic"
