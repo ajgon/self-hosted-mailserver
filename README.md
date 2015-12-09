@@ -2,10 +2,10 @@
 A set of ansible scripts, to set up fully functional, self-hosted mailserver.
 
 This set of scripts was based on those excellent articles:
-* [My First 5 Minutes On A Server; Or, Essential Security for Linux Servers](http://plusbryan.com/my-first-5-minutes-on-a-server-or-essential-security-for-linux-servers)
-* [NSA-proof your e-mail in 2 hours](http://sealedabstract.com/code/nsa-proof-your-e-mail-in-2-hours/)
+* [My First 5 Minutes On A Server; Or, Essential Security for Linux Servers](http://plusbryan.com/my-first-5-minutes-on-a-server-or-essential-security-for-linux-servers) ([copy](docs/my-first-5-minutes-on-a-server-or-essential-security-for-linux-servers.md))
+* [NSA-proof your e-mail in 2 hours](http://sealedabstract.com/code/nsa-proof-your-e-mail-in-2-hours/) ([copy](docs/nsa-proof-your-e-mail-in-2-hours.md))
 * [Strong Ciphers for Apache, nginx and Lighttpd](https://cipherli.st/)
-* [How To Use Duplicity with GPG to Securely Automate Backups](https://www.digitalocean.com/community/tutorials/how-to-use-duplicity-with-gpg-to-securely-automate-backups-on-ubuntu)
+* [How To Use Duplicity with GPG to Securely Automate Backups](https://www.digitalocean.com/community/tutorials/how-to-use-duplicity-with-gpg-to-securely-automate-backups-on-ubuntu) ([copy](docs/how-to-use-duplicity-with-gpg-to-securely-automate-backups-on-ubuntu.md))
 
 with some exceptions:
 
