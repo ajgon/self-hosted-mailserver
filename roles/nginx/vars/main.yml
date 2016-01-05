@@ -1,0 +1,5 @@
+nginx:
+  # Base64 of HPKP sha256 hash of your SECONDARY key (only base string, without pin-sha256 prefix etc.).
+  # The primary hash would be determined automatically basing on your certificate.
+  # See: https://scotthelme.co.uk/hpkp-http-public-key-pinning/
+  hpkp_sha256: false

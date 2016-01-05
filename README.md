@@ -8,6 +8,8 @@ This set of scripts was based on those excellent articles:
 * [How To Use Duplicity with GPG to Securely Automate Backups](https://www.digitalocean.com/community/tutorials/how-to-use-duplicity-with-gpg-to-securely-automate-backups-on-ubuntu) ([copy](docs/how-to-use-duplicity-with-gpg-to-securely-automate-backups-on-ubuntu.md))
 * [Guide to Deploying Diffie-Hellman for TLS](https://weakdh.org/sysadmin.html) ([copy](docs/guide-to-deploying-diffie-hellman-for-tls.md))
 * [Secure Secure Shell](https://stribika.github.io/2015/01/04/secure-secure-shell.html) ([copy](docs/secure-secure-shell.md))
+* [From F to A+: Getting Good Grades on Website Security Evaluations](https://diogomonica.com/2015/12/29/from-double-f-to-double-a/) ([copy](docs/from-double-f-to-double-a.md))
+* [HPKP: HTTP Public Key Pinning](https://scotthelme.co.uk/hpkp-http-public-key-pinning/) ([copy](docs/hpkp-http-public-key-pinning.md))
 
 with some exceptions:
 
@@ -16,10 +18,9 @@ with some exceptions:
 * added Roundcube - because you might need your email the less you expect it
 * added ddclient - since mobile hardware needs mobile support
 
-Those rules were written with Debian in mind, and were tested in 7.0 (Wheezy) and 8.0 (Jessie). They should also
+Those rules were written with Debian in mind, and were tested in Jessie (8.0). They should also
 work on Ubuntu, but I didn't try it and [you shouldn't too](https://gnu.org/philosophy/ubuntu-spyware.html).
-Also, by default E-mail server disables SSLv2, SSLv3, TLSv1 and TLSv1.1. This can cause problems with Apple Mail,
-but if you are concerned in privacy, this shouldn't be a big issue - since you should not use it anyway...
+Also, by default E-mail and Web servers disables SSLv2, SSLv3, TLSv1 and TLSv1.1. This can cause problems with apps like Apple Mail or MSIE, but if you are concerned in privacy, this shouldn't be a big issue - since you should not use them anyway...
 
 ## Install
 
@@ -41,7 +42,7 @@ the remotes.
 
 Next, you need to configure your new system(s) variables:
 
-    for role in base duplicity maildb security; do vi roles/${role}/vars/main.yml; done
+    for role in base duplicity maildb nginx security; do vi roles/${role}/vars/main.yml; done
 
 and add your SSL certificates to `roles/ssl/templates/certs-this-machine.pem` and `roles/ssl/templates/private-this-machine.pem`.
 I strongly recommed to use trusted certificate (for example from [here](https://www.startssl.com/?app=1)), but you can
@@ -59,4 +60,3 @@ And you're ready to rock!
     ansible-playbook -s -i ansible-inventory main.yml
 
 Have fun, and don't forget to set your TXT and PTR records for DKIM and SPF!
-

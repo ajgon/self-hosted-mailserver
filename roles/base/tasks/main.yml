@@ -6,6 +6,8 @@
   shell: echo 'APT::Install-Recommends "0";' > /etc/apt/apt.conf.d/00norecommends
 - name: Install libc-bin
   apt: pkg=libc-bin state=latest
+- name: Install curl
+  apt: pkg=curl state=latest
 - name: Install ntp
   apt: pkg=ntp state=latest
 - name: Install whois

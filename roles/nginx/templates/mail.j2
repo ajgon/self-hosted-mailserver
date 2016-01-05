@@ -12,6 +12,7 @@ server {
     ssl_certificate /etc/ssl/certs/this-machine.pem;
     ssl_certificate_key /etc/ssl/private/this-machine.pem;
 
+    include extra/security;
     # include extra/z-push;
     # include extra/roundcube;
 }
