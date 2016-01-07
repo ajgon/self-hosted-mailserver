@@ -19,11 +19,11 @@
 - name: /etc/opendkim.conf
   template: src=roles/opendkim/templates/opendkim.conf.j2 dest=/etc/opendkim.conf
 - name: "/etc/postfix/main.cf: smtpd_milters = inet:127.0.0.1:8891"
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*smtpd_milters\s*=" line="smtpd_milters = inet:127.0.0.1:8891"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_milters\s*=" line="smtpd_milters = inet:127.0.0.1:8891"
 - name: "/etc/postfix/main.cf: non_smtpd_milters = $smtpd_milters"
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*non_smtpd_milters\s*=" line="non_smtpd_milters = $smtpd_milters"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*non_smtpd_milters\s*=" line="non_smtpd_milters = $smtpd_milters"
 - name: "/etc/postfix/main.cf: milter_default_action = accept"
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?s*milter_default_action\s*=" line="milter_default_action = accept"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*milter_default_action\s*=" line="milter_default_action = accept"
 - name: "/etc/opendkim: chmod 0600 recursive"
   file: path=/etc/opendkim mode="u+rw,g-rwx,o-rwx" owner=opendkim group=opendkim recurse=yes
 - name: Restart OpenDKIM
