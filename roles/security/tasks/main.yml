@@ -1,3 +1,5 @@
+- name: Install bsd-mailx
+  apt: pkg=bsd-mailx state=latest
 - name: Install fail2ban
   apt: pkg=fail2ban state=latest
 - name: Install unattended-upgrades
@@ -90,4 +92,8 @@
   lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.conf.default.send_redirects\s*=" line="net.ipv4.conf.default.send_redirects = 0"
 - name: "Load new /etc/sysctl.conf"
   shell: "sysctl -p || true"
+- name: "/etc/apt/apt.conf.d/50unattended-upgrades - Set notification email"
+  lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="^/*\s*Unattended-Upgrade::Mail " line="Unattended-Upgrade::Mail \"{{ security.email }}\";"
+- name: "/etc/apt/apt.conf.d/50unattended-upgrades - Autoremove unused dependencies"
+  lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="^/*\s*Unattended-Upgrade::Remove-Unused-Dependencies " line="Unattended-Upgrade::Remove-Unused-Dependencies \"true\";"
 
