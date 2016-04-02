@@ -42,7 +42,7 @@ the remotes.
 
 Next, you need to configure your new system(s) variables:
 
-    for role in base duplicity maildb nginx security; do vi roles/${role}/vars/main.yml; done
+    for role in base duplicity maildb postfix nginx security; do vi roles/${role}/vars/main.yml; done
 
 and add your SSL certificates to `roles/ssl/templates/certs-this-machine.pem` and `roles/ssl/templates/private-this-machine.pem`.
 I strongly recommed to use trusted certificate (for example from [here](https://www.startssl.com/?app=1)), but you can

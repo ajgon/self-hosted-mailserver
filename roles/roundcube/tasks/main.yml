@@ -1,9 +1,7 @@
 - name: Install Roundcube Webmail
-  apt: pkg=roundcube state=latest
+  apt: pkg=roundcube state=latest default_release=jessie-backports
 - name: Add roundcube MySQL database
   mysql_db: name={{ roundcube.database }}
-- name: Import roundcube MySQL database
-  mysql_db: name={{ roundcube.database }} state=import target=/usr/share/dbconfig-common/data/roundcube/install/mysql
 - name: Add roundcube MySQL user
   mysql_user: name={{ roundcube.username }} password="{{ roundcube.password }}" priv="{{ roundcube.database }}.*:ALL"
 - name: "/etc/roundcube/debian-db.php: $dbuser"
@@ -19,7 +17,7 @@
 - name: "/etc/roundcube/debian-db.php: $dbtype"
   lineinfile: dest=/etc/roundcube/debian-db.php regexp="^#?\s*\$dbtype\s*=" line="$dbtype='mysql';"
 - name: "/etc/roundcube/main.inc.php: default_host"
-  lineinfile: dest=/etc/roundcube/main.inc.php regexp="^#?\s*\$rcmail_config\['default_host'\]\s*=" line="$rcmail_config['default_host'] = array('{{ roundcube.defaulthost }}');"
+  lineinfile: dest=/etc/roundcube/config.inc.php regexp="^#?\s*\$config\['default_host'\]\s*=" line="$config['default_host'] = array('{{ roundcube.defaulthost }}');"
 - name: Enable PHP MCrypt
   file: src=/etc/php5/mods-available/mcrypt.ini dest=/etc/php5/fpm/conf.d/20-mcrypt.ini state=link
 - name: '/etc/nginx/extra'

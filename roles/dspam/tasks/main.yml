@@ -1,5 +1,5 @@
 - name: Install DSpam
-  apt: pkg=dspam state=latest
+  apt: pkg=dspam state=latest default_release=wheezy
 - name: Install Dovecot AntiSpam
   apt: pkg=dovecot-antispam state=latest
 - name: Install Postfix PCRE

@@ -1,5 +1,7 @@
 - name: Add wheezy packages
   lineinfile: dest=/etc/apt/sources.list line="deb http://ftp.debian.org/debian wheezy main non-free contrib\ndeb-src http://ftp.debian.org/debian wheezy main non-free contrib"
+- name: Add backport packages
+  lineinfile: dest=/etc/apt/sources.list line="deb http://ftp.debian.org/debian jessie-backports main non-free contrib"
 - name: Update distro
   apt: update_cache=yes upgrade=yes
 - name: Disable recommended packages

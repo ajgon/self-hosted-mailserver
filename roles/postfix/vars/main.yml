@@ -1,0 +1,8 @@
+postfix:
+  # If you have trouble with your email delivery (i.e. your IP is get rejected by some MTAs or it's on PBL), you may
+  # try to use relay host for your outgoing emails. You need to enter host and port here (i.e. mail.host.com:587)
+  # Set to false if you wish to disable this feature
+  relay_host: false
+  # Relayhost needs an authenticate you, so you need to provide your username and password for it as well
+  relay_username:
+  relay_password:
