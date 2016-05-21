@@ -1,5 +1,8 @@
-- name: Install ddclient
+- name: Install duplicity
   apt: pkg=duplicity state=latest
+- name: Set duplicity cache directory
+  file: src="{{ duplicity.cache_directory }}" dest="/root/.cache/duplicity" force=yes
+  when: duplicity.cache_directory
 - name: '/etc/cron.daily/duplicity-inc'
   template: src=roles/duplicity/templates/duplicity-inc.j2 dest=/etc/cron.daily/duplicity-inc
 - name: 'root:root 700 /etc/cron.daily/duplicity-inc'

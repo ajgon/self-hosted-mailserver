@@ -17,12 +17,16 @@ with some exceptions:
 * no full text search - beacuse it's JAVA
 * added Roundcube - because you might need your email the less you expect it
 * added ddclient - since mobile hardware needs mobile support
+* and as a bonus - there is also a ownCloud installation scripts available
 
 Those rules were written with Debian in mind, and were tested in Jessie (8.0). They should also
 work on Ubuntu, but I didn't try it and [you shouldn't too](https://gnu.org/philosophy/ubuntu-spyware.html).
 Also, by default E-mail and Web servers disables SSLv2, SSLv3, TLSv1 and TLSv1.1. This can cause problems with apps like Apple Mail or MSIE, but if you are concerned in privacy, this shouldn't be a big issue - since you should not use them anyway...
 
 ## Install
+
+Suggestions below would do, but if you like, I also wrote a
+[a blog post with more detailed approach](https://www.rzegocki.pl/blog/2016/05/22/build-your-own-cloud-fast-thanks-to-ansible-and-automation/).
 
 First of all you need [ansible](http://www.ansible.com/home)
 
@@ -60,3 +64,15 @@ And you're ready to rock!
     ansible-playbook -s -i ansible-inventory main.yml
 
 Have fun, and don't forget to set your TXT and PTR records for DKIM and SPF!
+
+## Testing and development
+
+For the convenience there is a preconfigured Vagrant configuration, for those who wish to run those scripts on sandbox environment.
+All you have to do is:
+
+```
+vagrant up
+ansible-playbook -s -i ansible-vagrant main.yml
+```
+
+All services will be exposed on 10xxx ports (so email will be on 10025, www on 10080 and 10443 etc.).

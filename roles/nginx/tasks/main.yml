@@ -15,7 +15,7 @@
 - name: '/etc/nginx/extra/security'
   template: src=roles/nginx/templates/security.j2 dest=/etc/nginx/extra/security
 - name: 'enable HPKP'
-  shell: echo "add_header Public-Key-Pins 'pin-sha256=\"$(openssl x509 -in /etc/ssl/certs/this-machine.pem -pubkey -noout | openssl rsa -pubin -outform der | openssl dgst -sha256 -binary | base64)\" pin-sha256=\"{{ nginx.hpkp_sha256 }}\"; max-age=86400';" >> /etc/nginx/extra/security
+  shell: echo "add_header Public-Key-Pins 'pin-sha256=\"$(openssl x509 -in /etc/ssl/certs/this-machine.pem -pubkey -noout | openssl rsa -pubin -outform der | openssl dgst -sha256 -binary | base64)\"; pin-sha256=\"{{ nginx.hpkp_sha256 }}\"; max-age=2592000';" >> /etc/nginx/extra/security
   when: nginx.hpkp_sha256
 - name: 'blacklist.conf'
   template: src=roles/nginx/templates/blacklist.conf.j2 dest=/tmp/blacklist.conf

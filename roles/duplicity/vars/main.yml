@@ -7,3 +7,8 @@ duplicity:
   webdav_password: ""
   # Encrypt key ID - A GnuPG secret key ID, which will be used for encrypting your duplicity backups (8-digit hex number)
   encrypt_key: ""
+  # Set custom duplicity cache directory. This is crucial on filesystems stored on storages which doesn't handle multiple
+  # read/write operations very well (i.e. SDCard). If you plan to store your server on such device (i.e. microSD on Raspberry Pi),
+  # you really, really, REALLY should set it to some directory hosted on different storage (i.e. HDD).
+  # If set to false, uses default /root/.cache/duplicity
+  cache_directory: false

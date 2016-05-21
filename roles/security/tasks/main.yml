@@ -7,15 +7,15 @@
 - name: Install logwatch
   apt: pkg=logwatch state=latest
 - name: Add default user
-  user: name="{{ security.user_login }}"
+  user: name="{{ security.user_login }}" shell=/bin/bash
 - name: Set user password
   shell: "echo \"{{ security.user_login }}:{{ security.user_password }}\" | chpasswd"
 - name: Create user .ssh directory
   file: path="~{{ security.user_login }}/.ssh" mode=0700 state=directory owner="{{ security.user_login }}"
 - name: Create user authorized_keys
   template: src=roles/security/templates/authorized_keys.j2 dest="~{{ security.user_login }}/.ssh/authorized_keys" owner="{{ security.user_login }}" mode=0400
-- name: "/etc/sudoers"
-  template: src=roles/security/templates/sudoers.j2 dest=/etc/sudoers
+- name: "/etc/sudoers.d/user"
+  template: src=roles/security/templates/sudoers.j2 dest=/etc/sudoers.d/user
 - name: "/etc/ssh/sshd_config: Protocol 2"
   lineinfile: dest=/etc/ssh/sshd_config regexp="^Protocol " line="Protocol 2"
 - name: "/etc/ssh/sshd_config: PermitRootLogin no"

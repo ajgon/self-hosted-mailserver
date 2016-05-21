@@ -8,3 +8,4 @@ export WEBDAV_PASSWORD
 export WEBDAV_HOST_PATH
 
 $(which duplicity) --ssl-no-check-certificate --encrypt-key {{ duplicity.encrypt_key }} /mail/ webdavs://${WEBDAV_USERNAME}:${WEBDAV_PASSWORD}@${WEBDAV_HOST_PATH}/mail-backup
+$(which duplicity) --ssl-no-check-certificate --encrypt-key {{ duplicity.encrypt_key }} --include /var/www/owncloud/data/ --exclude '**' /var webdavs://${WEBDAV_USERNAME}:${WEBDAV_PASSWORD}@${WEBDAV_HOST_PATH}/owncloud-backup
