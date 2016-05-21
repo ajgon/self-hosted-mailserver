@@ -8,5 +8,5 @@
   shell: openssl dhparam -out /etc/ssl/dhparams.pem 4096
   when: security.strong_primes
 - name: "/etc/ssl/dhparams.pem (weak)"
-  shell: openssl dhparam -out /etc/ssl/dhparams.pem 1024
+  shell: openssl dhparam -out /etc/ssl/dhparams.pem 512
   when: not security.strong_primes

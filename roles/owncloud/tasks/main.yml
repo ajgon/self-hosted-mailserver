@@ -1,0 +1,56 @@
+- name: Add owncloud apt-key
+  apt_key: url=https://download.owncloud.org/download/repositories/stable/Debian_8.0/Release.key
+- name: Add owncloud repository
+  apt_repository: repo="deb http://download.owncloud.org/download/repositories/stable/Debian_8.0/ /"
+- name: Install php5-gd
+  apt: pkg=php5-gd state=latest
+- name: Install php5-curl
+  apt: pkg=php5-curl state=latest
+- name: Install php5-mysqlnd
+  apt: pkg=php5-mysqlnd state=latest
+- name: Install owncloud
+  apt: pkg=owncloud-files state=latest update_cache=yes
+- name: Add owncloud MySQL database
+  mysql_db: name={{ owncloud.database  }}
+- name: Add owncloud MySQL user
+  mysql_user: name={{ owncloud.username }} password="{{ owncloud.password }}" priv="{{ owncloud.database }}.*:ALL"
+- name: Change ownership to www-data
+  file: path=/var/www/owncloud owner=www-data group=www-data recurse=yes
+- name: Setup owncloud
+  shell: php occ maintenance:install --database "mysql" --database-name "{{ owncloud.database }}"  --database-user "{{ owncloud.username }}" --database-pass "{{ owncloud.password }}" --admin-user "{{ owncloud.admin.username }}" --admin-pass "{{ owncloud.admin.password }}"
+  args:
+    chdir: /var/www/owncloud
+  become: yes
+  become_user: www-data
+  become_method: sudo
+- name: Set trusted domains
+  shell: php occ config:system:set trusted_domains {{ item.0 }} --value={{ item.1 }}
+  args:
+    chdir: /var/www/owncloud
+  become: yes
+  become_user: www-data
+  become_method: sudo
+  with_indexed_items: "{{ owncloud.trusted_domains }}"
+- name: Add users
+  shell: php occ user:add --password-from-env --display-name="{{ item.display_name }}" --group="users" {{ item.username }}
+  args:
+    chdir: /var/www/owncloud
+  environment:
+    OC_PASS: "{{ item.password }}"
+  with_list: "{{ owncloud.users }}"
+  become: yes
+  become_user: www-data
+  become_method: sudo
+- name: '/etc/nginx/extra'
+  file: path=/etc/nginx/extra state=directory
+- name: '/etc/nginx/extra/owncloud'
+  template: src=roles/owncloud/templates/owncloud.j2 dest=/etc/nginx/extra/owncloud
+- name: Symlink basepath
+  file: src=/var/www/owncloud dest=/var/www/{{ owncloud.basepath }} state=link
+  when: owncloud.basepath != 'owncloud' and owncloud.basepath != '/owncloud'
+- name: 'Enable owncloud in nginx'
+  lineinfile: dest=/etc/nginx/sites-available/mail regexp='# include extra/owncloud;' line='    include extra/owncloud;'
+- name: Restart nginx
+  service: state=restarted name=nginx
+- name: Restart php5-fpm
+  service: state=restarted name=php5-fpm

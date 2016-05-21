@@ -1,0 +1,26 @@
+owncloud:
+  # MySQL user username for owncloud database (use different than root!)
+  username: "owncloud"
+  # MySQL user password for owncloud database
+  password:
+  # MySQL database name for owncloud
+  database: "owncloud"
+  # Path which will be used to access to owncloud (i.e. "/owncloud" will result with https://host/owncloud, leave at least "/" there)
+  basepath: "/owncloud"
+  # The list of domains which owncloud considted as "trusted". Add at least your server address here
+  trusted_domains:
+    - localhost
+  # Admin user
+  admin:
+    # Admin user username
+    username: admin
+    # Admin user password
+    password:
+  # Other owncloud users. Don't use admin as your main user, instead create some unprivileged users, and use them
+  users:
+    # User username
+    - username:
+      # User password
+      password:
+      # User display name
+      display_name:

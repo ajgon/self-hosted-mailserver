@@ -1,7 +1,7 @@
 roundcube:
   # MySQL user username for roundcube database (use different than root!)
   username: "roundcube"
-  # MySQL user password for mailserver database
+  # MySQL user password for roundcube database
   password:
   # MySQL database name for roundcube
   database: "roundcube"
