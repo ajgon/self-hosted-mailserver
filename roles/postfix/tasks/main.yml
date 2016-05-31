@@ -62,8 +62,8 @@
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_helo_required\s=" line="smtpd_helo_required = yes"
 - name: "/etc/postfix/main.cf: smtpd_helo_restrictions = permit_mynetworks, reject_invalid_hostname"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_helo_restrictions\s=" line="smtpd_helo_restrictions = permit_mynetworks, reject_invalid_hostname"
-- name: "/etc/postfix/main.cf: smtpd_sender_restrictions = reject_unknown_address"
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_sender_restrictions\s=" line="smtpd_sender_restrictions = reject_unknown_address"
+- name: "/etc/postfix/main.cf: smtpd_sender_restrictions = reject_unknown_address, reject_unknown_sender_domain"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_sender_restrictions\s=" line="smtpd_sender_restrictions = reject_unknown_address, reject_unknown_sender_domain"
 - name: "/etc/postfix/main.cf: disable_vrfy_command = yes"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*disable_vrfy_command\s=" line="disable_vrfy_command = yes"
 - name: "/etc/postfix/main.cf: strict_rfc821_envelopes = yes"
@@ -80,8 +80,6 @@
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*postscreen_greet_action\s=" line="postscreen_greet_action = enforce"
 - name: "/etc/postfix/main.cf: smtp_use_tls = yes"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_use_tls\s=" line="smtp_use_tls = yes"
-- name: "/etc/postfix/main.cf: smtp_sasl_auth_enable = yes"
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_sasl_auth_enable\s=" line="smtp_sasl_auth_enable = yes"
 - name: "/etc/postfix/main.cf: smtp_sasl_security_options = noanonymous"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_sasl_security_options\s=" line="smtp_sasl_security_options = noanonymous"
 - name: "/etc/postfix/main.cf: smtp_always_send_ehlo = yes"
@@ -89,6 +87,9 @@
 - name: "/etc/postfix/main.cf: smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_tls_CAfile\s=" line="smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt"
 
+- name: "/etc/postfix/main.cf: smtp_sasl_auth_enable = yes"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_sasl_auth_enable\s=" line="smtp_sasl_auth_enable = yes"
+  when: postfix.relay_host
 - name: "/etc/postfix/main.cf: smtpd_sasl_auth_enable = yes"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_sasl_auth_enable\s*=" line="smtpd_sasl_auth_enable = yes"
   when: postfix.relay_host
