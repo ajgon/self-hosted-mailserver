@@ -7,6 +7,10 @@ maildb:
   password: ""
   # MySQL database name for mailserver
   database: "mailserver"
+  # Primary hostname, used by postfix to identify itself. Usually the primary domain from section below.
+  # Very important parameter, if you experience gmail errors "550-5.7.1 unsolicited mail originating from your IP address",
+  # this might me the issue.
+  myhostname: ""
   # List of mail domains (you can put as many as you like)
   domains:
       # Domain name (i.e. example.com)

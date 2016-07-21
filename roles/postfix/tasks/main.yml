@@ -8,6 +8,8 @@
   apt: pkg=python-mysqldb state=latest
 - name: Install sasl modules
   apt: pkg=libsasl2-modules state=latest
+- name: "/etc/postfix/main.cf: myhostname=..."
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*myhostname\s*=" line="myhostname = {{ myhostname }}"
 - name: "/etc/postfix/main.cf: smtpd_tls_cert_file=/etc/ssl/certs/this-machine.pem"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_tls_cert_file\s*=" line="smtpd_tls_cert_file=/etc/ssl/certs/this-machine.pem"
 - name: "/etc/postfix/main.cf: smtpd_tls_key_file=/etc/ssl/private/this-machine.pem"
