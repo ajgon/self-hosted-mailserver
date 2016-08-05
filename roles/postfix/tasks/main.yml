@@ -8,6 +8,10 @@
   apt: pkg=python-mysqldb state=latest
 - name: Install sasl modules
   apt: pkg=libsasl2-modules state=latest
+- name: "blackhole email"
+  lineinfile: dest=/etc/aliases line="blackhole: /dev/null"
+- name: "rebuild aliases"
+  shell: "/usr/bin/newaliases"
 - name: "/etc/postfix/main.cf: myhostname=..."
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*myhostname\s*=" line="myhostname = {{ myhostname }}"
 - name: "/etc/postfix/main.cf: smtpd_tls_cert_file=/etc/ssl/certs/this-machine.pem"
